@@ -47,11 +47,12 @@ contract Game is IGame {
     ) external {
         require(boardSetupVerifier.verifyProof(a, b, c, input), "Invalid ship configuration!");
 
-        gameIndex++;
         games[gameIndex].participants[0] = msg.sender;
         games[gameIndex].boards[0] = input[0];
 
         emit Started(gameIndex, msg.sender);
+
+        gameIndex++;
     }
 
     function joinGame(
