@@ -3,7 +3,9 @@
     "scripts": {
         "build:circuits": "sh scripts/compile-circuits.sh",
         "setup:mock-ptau": "sh ./scripts/mock-ptau.sh",
-        "setup:mock-groth16-setup": "sh ./scripts/mock-groth16-setup.sh"
+        "setup:mock-groth16-setup": "sh ./scripts/mock-groth16-setup.sh",
+        "generate:witnesses": "sh ./scripts/generate-witnesses.sh",
+        "generate:proofs": "sh ./scripts/generate-proofs.sh"
     },
     "dependencies": {
         "circomlib": "^2.0.3"
