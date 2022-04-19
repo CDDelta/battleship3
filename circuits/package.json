@@ -3,7 +3,7 @@
     "scripts": {
         "build:circuits": "sh scripts/compile-circuits.sh",
         "setup:mock-ptau": "sh ./scripts/mock-ptau.sh",
-        "setup:mock-phase2": "sh ./scripts/mock-phase2.sh"
+        "setup:mock-groth16-setup": "sh ./scripts/mock-groth16-setup.sh"
     },
     "dependencies": {
         "circomlib": "^2.0.3"
