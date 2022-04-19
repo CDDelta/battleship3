@@ -30,3 +30,6 @@ RUN cargo install --path circom
 
 # Install snarkjs
 RUN npm install -g snarkjs
+
+# Install the Angular CLI
+RUN npm install -g @angular/cli
