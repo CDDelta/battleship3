@@ -16,11 +16,6 @@ contract Game is IGame {
     IBoardSetupVerifier boardSetupVerifier; 
     IFireShotVerifier fireShotVerifier;
 
-    modifier playerTurn(uint256 _gameId) {
-        require(msg.sender == games[_gameId].participants[games[_gameId].turn % 2], "Not turn!");
-        _;
-    }
-
     constructor(address _boardSetupVerifier, address _fireShotVerifier) {
         boardSetupVerifier = IBoardSetupVerifier(_boardSetupVerifier);
         fireShotVerifier = IFireShotVerifier(_fireShotVerifier);
@@ -94,10 +89,11 @@ contract Game is IGame {
         uint256[2][2] memory b,
         uint256[2] memory c,
         uint256[8] memory input
-    ) external playerTurn(_gameId) {
+    ) external {
         Game storage game = games[_gameId];
 
         require(game.turn > 0, "The first turn!");
+        require(msg.sender == game.participants[game.turn % 2], "Not turn!");
         require(game.winner == address(0), "Game already over!");
         require(_nextShot[0] < 10 && _nextShot[1] < 10, "Next shot coordinates invalid!");
         require(
