@@ -1,6 +1,6 @@
 {
     "name": "battleship3",
-    "dependencies": {
-        "circomlib": "^2.0.3"
-    }
+    "workspaces": [
+        "circuits"
+    ]
 }
