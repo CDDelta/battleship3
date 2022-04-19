@@ -1,6 +1,7 @@
 {
-    "name": "battleship3",
-    "workspaces": [
-        "circuits"
-    ]
+  "name": "battleship3",
+  "workspaces": [
+    "circuits",
+    "contracts"
+  ]
 }
