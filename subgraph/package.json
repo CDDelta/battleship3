@@ -3,6 +3,7 @@
   "scripts": {
     "codegen": "graph codegen --output-dir src/types/",
     "build": "graph build",
+    "start:dev": "docker compose up",
     "create": "graph create --node http://localhost:8020 harmony/battleship3",
     "deploy": "graph deploy --node http://localhost:8020 --ipfs http://localhost:5001 harmony/battleship3"
   },
