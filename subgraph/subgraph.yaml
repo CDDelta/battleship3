@@ -1,0 +1,31 @@
+specVersion: 0.0.2
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: Game
+    network:
+    source:
+      abi: Game
+      startBlock: 0
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Game
+      abis:
+        - name: Game
+          file: ../contracts/out/Game.sol/Game.json
+      eventHandlers:
+        - event: Started(uint256,address)
+          handler: handleGameStarted
+        - event: Joined(uint256,address)
+          handler: handleGameJoined
+        - event: ShotFired(uint256,uint8)
+          handler: handleShotFired
+        - event: ShotLanded(uint256,uint8)
+          handler: handleShotLanded
+        - event: Won(uint256,address)
+          handler: handleGameWon
+      file: ./src/mappings/Game.ts

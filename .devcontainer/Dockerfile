@@ -34,6 +34,9 @@ RUN npm install -g snarkjs
 # Install the Angular CLI
 RUN npm install -g @angular/cli
 
+# Install The Graph CLI
+RUN npm install -g @graphprotocol/graph-cli
+
 # Install Foundry
 RUN curl -L https://foundry.paradigm.xyz | bash
 RUN cargo install --git https://github.com/foundry-rs/foundry --locked

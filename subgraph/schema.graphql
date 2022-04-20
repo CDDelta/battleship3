@@ -1,0 +1,37 @@
+enum GameStatus {
+  STARTED
+  JOINED
+  OVER
+}
+
+type Game @entity {
+  id: ID!
+  status: GameStatus!
+  turn: Int!
+
+  startedBy: Bytes!
+  joinedBy: Bytes
+  wonBy: Bytes
+
+  shots: [Shot!] @derivedFrom(field: "game")
+}
+
+enum ShotStatus {
+  UNKNOWN
+  MISS
+  CARRIER
+  BATTLESHIP
+  CRUISER
+  SUBMARINE
+  DESTROYER
+}
+
+type Shot @entity {
+  id: ID!
+  game: Game!
+  turn: Int!
+  status: ShotStatus!
+
+  x: Int!
+  y: Int!
+}
