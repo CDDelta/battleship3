@@ -2,7 +2,9 @@
   "name": "battleship3-subgraph",
   "scripts": {
     "codegen": "graph codegen --output-dir src/types/",
-    "build": "graph build"
+    "build": "graph build",
+    "create": "graph create --node http://localhost:8020 harmony/battleship3",
+    "deploy": "graph deploy --node http://localhost:8020 --ipfs http://localhost:5001 harmony/battleship3"
   },
   "dependencies": {
     "@graphprotocol/graph-ts": "^0.26.0"

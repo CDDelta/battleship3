@@ -4,10 +4,11 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: Game
-    network:
+    network: testnet
     source:
+      address: '0x5fd201a1dce40e4bcc6b4c10f3960598ff73545f'
       abi: Game
-      startBlock: 0
+      startBlock: 24237304
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
