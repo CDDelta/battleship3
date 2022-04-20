@@ -62,10 +62,13 @@ contract Game is IGame {
         uint256[2] memory c,
         uint256[1] memory input
     ) external {
+        Game storage game = games[_gameId];
+
+        require(game.participants[1] == address(0), "Game already full!");
         require(boardSetupVerifier.verifyProof(a, b, c, input), "Invalid ship configuration!");
 
-        games[_gameId].participants[1] = msg.sender;
-        games[_gameId].boards[1] = input[0];
+        game.participants[1] = msg.sender;
+        game.boards[1] = input[0];
 
         emit Joined(_gameId, msg.sender);
     }
