@@ -1,3 +1,6 @@
 {
-  "name": "battleship3-contracts"
+  "name": "battleship3-contracts",
+  "scripts": {
+    "build": "forge build"
+  }
 }
