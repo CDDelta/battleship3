@@ -1,1 +1,43 @@
-<h1 class="text-center">Fire a shot!</h1>
+<h1 class="text-center">Your turn!</h1>
+
+<div class="d-flex justify-content-between">
+    <div>
+        <p class="h5 mb-1">Your Ship Cells Left</p>
+        <p class="h4">4</p>
+    </div>
+
+    <div class="text-end">
+        <p class="h5 mb-1">Opponent Ship Cells Left</p>
+        <p class="h4">5</p>
+    </div>
+</div>
+
+<div class="d-flex justify-content-center">
+    <table class="flex-1 m-5">
+        <tr>
+            <th></th>
+            <th *ngFor="let column of columns">{{ column }}</th>
+        </tr>
+
+        <tr *ngFor="let row of rows">
+            <th>{{ row }}</th>
+            <td *ngFor="let column of columns"></td>
+        </tr>
+    </table>
+
+    <table class="flex-1 m-5">
+        <tr>
+            <th></th>
+            <th *ngFor="let column of columns">{{ column }}</th>
+        </tr>
+
+        <tr *ngFor="let row of rows">
+            <th>{{ row }}</th>
+            <td *ngFor="let column of columns"></td>
+        </tr>
+    </table>
+</div>
+
+<div class="text-center">
+    <button class="btn btn-primary">Fire shot</button>
+</div> 

@@ -1,0 +1,19 @@
+@import 'src/styles/variables';
+
+th, td {
+    width: 48px;
+    height: 48px;
+    text-align: center;
+}
+
+td {
+    border: 1px solid $gray-900;
+
+    &:hover {
+        background-color: $gray-300;
+    }
+}
+
+.card {
+    margin-top: calc(3rem + 48px) !important;
+}

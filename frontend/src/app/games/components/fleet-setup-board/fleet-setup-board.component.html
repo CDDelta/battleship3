@@ -1,1 +1,20 @@
-<p>fleet-setup-board works!</p>
+<div class="d-flex justify-content-center">
+    <table class="flex-2 m-5">
+        <tr>
+            <th></th>
+            <th *ngFor="let column of columns">{{ column }}</th>
+        </tr>
+
+        <tr *ngFor="let row of rows">
+            <th>{{ row }}</th>
+            <td *ngFor="let column of columns"></td>
+        </tr>
+    </table>
+    
+    <div class="card border-primary flex-1 m-5" style="max-width: 20rem;">
+        <div class="card-body">
+            <h2 class="card-title">Ships Available</h2>
+            
+        </div>
+    </div>
+</div>
