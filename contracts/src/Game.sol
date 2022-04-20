@@ -13,7 +13,7 @@ contract Game is IGame {
     /// The number of unique hits it takes to win a game.
     uint256 public constant WIN_HIT_COUNT = 17;
 
-    IBoardSetupVerifier boardSetupVerifier; 
+    IBoardSetupVerifier boardSetupVerifier;
     IFireShotVerifier fireShotVerifier;
 
     constructor(address _boardSetupVerifier, address _fireShotVerifier) {
@@ -70,64 +70,56 @@ contract Game is IGame {
         emit Joined(_gameId, msg.sender);
     }
 
-    function playFirstTurn(uint256 _gameId, uint256[2] memory _shot) external {
+    function playFirstTurn(uint256 _gameId, uint256 _shotIndex) external {
         Game storage game = games[_gameId];
 
         require(game.turn == 0, "Not the first turn!");
         require(msg.sender == game.participants[0], "Not turn!");
-        require(_shot[0] < 10 && _shot[1] < 10, "Shot coordinates invalid!");
+        require(_shotIndex < 100, "Shot coordinates invalid!");
 
-        game.shots[game.turn] = _shot;
+        game.shots[_shotIndex] = game.turn;
         game.turn++;
 
-        emit ShotFired(_gameId, uint8(_shot[0]), uint8(_shot[1]));
+        emit ShotFired(_gameId, uint8(_shotIndex));
     }
 
     function playTurn(
         uint256 _gameId,
-        uint256[2] memory _nextShot,
+        uint256 _nextShotIndex,
         uint256[2] memory a,
         uint256[2][2] memory b,
         uint256[2] memory c,
-        uint256[8] memory input
+        uint256[3] memory input
     ) external {
         Game storage game = games[_gameId];
 
+        uint256 prevPlayerIndex = (game.turn - 1) % 2;
+        uint256 currPlayerIndex = game.turn % 2;
+
         require(game.turn > 0, "The first turn!");
-        require(msg.sender == game.participants[game.turn % 2], "Not turn!");
+        require(msg.sender == game.participants[currPlayerIndex], "Not turn!");
         require(game.winner == address(0), "Game already over!");
-        require(_nextShot[0] < 10 && _nextShot[1] < 10, "Next shot coordinates invalid!");
+        require(_nextShotIndex < 100, "Next shot coordinates invalid!");
         require(
-            input[5] == game.boards[game.turn % 2] &&
-            input[6] == game.shots[game.turn - 1][0] &&
-            input[7] == game.shots[game.turn - 1][1] &&
+            input[1] == game.boards[prevPlayerIndex] &&
+            game.turn - 1 == game.shots[input[2] + prevPlayerIndex * 100] &&
             fireShotVerifier.verifyProof(a, b, c, input), "Invalid proof!"
         );
 
-        for (uint256 i = 0; i <= 5; i++) {
-            if (i == 5) {
-                // Emit a ShotLanded event with ship id 5 to indicate a missed shot.
-                emit ShotLanded(_gameId, 5);
-                break;
-            }
-
-            if (input[i] == 1) {
-                game.hits[(game.turn - 1) % 2]++;
-                emit ShotLanded(_gameId, uint8(i));
-                break;
-            }
+        if (input[0] != 0) {
+            game.hits[prevPlayerIndex]++;
         }
 
-        if (game.hits[(game.turn - 1) % 2] >= WIN_HIT_COUNT) {
-            game.winner = game.participants[(game.turn - 1) % 2];
+        emit ShotLanded(_gameId, uint8(input[0]));
+
+        if (game.hits[prevPlayerIndex] >= WIN_HIT_COUNT) {
+            game.winner = game.participants[prevPlayerIndex];
             emit Won(_gameId, game.winner);
         } else {
-            for (uint256 i = game.turn % 2; i < game.turn; i += 2) {
-                require(game.shots[i][0] != _nextShot[0] && game.shots[i][1] != _nextShot[1], "Shots must be unique!");
-            }
+            require(game.shots[_nextShotIndex + currPlayerIndex * 100] == 0, "Shots must be unique!");
 
-            game.shots[game.turn] = _nextShot;
-            emit ShotFired(_gameId, uint8(_nextShot[0]), uint8(_nextShot[1]));
+            game.shots[_nextShotIndex + currPlayerIndex * 100] = game.turn;
+            emit ShotFired(_gameId, uint8(_nextShotIndex));
             game.turn++;
         }
     }

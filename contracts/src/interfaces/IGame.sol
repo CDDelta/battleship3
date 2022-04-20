@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 interface IGame {
     event Started(uint256 _gameId, address _by);
     event Joined(uint256 _gameId, address _by);
-    event ShotFired(uint256 _gameId, uint8 _shotX, uint8 _shotY);
+    event ShotFired(uint256 _gameId, uint8 _shotIndex);
     event ShotLanded(uint256 _gameId, uint8 _shipId);
     event Won(uint256 _gameId, address _by);
 
@@ -15,8 +15,9 @@ interface IGame {
         uint256[2] boards;
         /// The turn number of this game.
         uint256 turn;
-        /// Mapping from turn number to shot coordinates.
-        mapping(uint256 => uint256[2]) shots;
+        /// Mapping of player shot indices to turn number.
+        /// The shot indices of the second player are offset by 100.
+        mapping(uint256 => uint256) shots;
         /// The number of hits each player has made on a ship.
         uint256[2] hits;
         /// The winner of the game.
@@ -49,14 +50,14 @@ interface IGame {
         uint256[1] memory input
     ) external;
 
-    function playFirstTurn(uint256 _gameId, uint256[2] memory _shot) external;
+    function playFirstTurn(uint256 _gameId, uint256 _shotIndex) external;
 
     function playTurn(
         uint256 _gameId,
-        uint256[2] memory _nextShot,
+        uint256 _nextShotIndex,
         uint256[2] memory a,
         uint256[2][2] memory b,
         uint256[2] memory c,
-        uint256[8] memory input
+        uint256[3] memory input
     ) external;
 }

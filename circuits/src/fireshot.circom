@@ -12,10 +12,10 @@ template FireShot() {
     signal input trapdoor;
     signal input hash;
 
-    // The x, y coordinate of the shot.
-    signal input shot[2];
+    // The linearized coordinate of the player's shot.
+    signal input shotIndex;
 
-    signal output hits[5];
+    signal output hitShipId;
 
     // The length of each ship in the order used.
     var lengths[5] = [5, 4, 3, 3, 2];
@@ -31,7 +31,13 @@ template FireShot() {
     hasher.outs[0] === hash;
 
     // Compute which ship the shot hit.
+    signal shot[2];
+    shot[1] <== shotIndex \ 10;
+    shot[0] <== shotIndex - shot[1] * 10;
+
     component shipHits[5];
+    component shipBitlistToInteger = Bits2Num_strict();
+
     for (var i = 0; i < 5; i++) {
         shipHits[i] = ShipHit(lengths[i]);
         shipHits[i].ship[0] <== ships[i][0];
@@ -40,8 +46,15 @@ template FireShot() {
         shipHits[i].shot[0] <== shot[0];
         shipHits[i].shot[1] <== shot[1];
 
-        hits[i] <== shipHits[i].hit;
+        shipBitlistToInteger.in[i] <== shipHits[i].hit;
     }
+
+    // Output the ship hit bitlist as an integer.
+    for (var i = 5; i < 254; i++) {
+        shipBitlistToInteger.in[i] <== 0;
+    }
+
+    hitShipId <== shipBitlistToInteger.out;
 }
 
-component main { public [hash, shot] } = FireShot();
+component main { public [hash, shotIndex] } = FireShot();
