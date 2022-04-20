@@ -15,11 +15,12 @@
     "settings": {},
     // Add the IDs of extensions you want installed when the container is created.
     "extensions": [
-        "dbaeumer.vscode-eslint",
-        "JuanBlanco.solidity",
-        "esbenp.prettier-vscode",
-        "iden3.circom"
-    ],
+		"dbaeumer.vscode-eslint",
+		"JuanBlanco.solidity",
+		"esbenp.prettier-vscode",
+		"iden3.circom",
+		"GraphQL.vscode-graphql"
+	],
     // Use 'forwardPorts' to make a list of ports inside the container available locally.
     // "forwardPorts": [],
     // Use 'postCreateCommand' to run commands after the container is created.

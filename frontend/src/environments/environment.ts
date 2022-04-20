@@ -3,7 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  gqlQueryUri: 'http://localhost:8000/subgraphs/name/harmony/battleship3',
+  gqlSubscriptionUri: 'http://localhost:8001/subgraphs/name/harmony/battleship3'
 };
 
 /*

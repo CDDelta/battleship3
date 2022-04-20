@@ -1,0 +1,9 @@
+schema: http://localhost:8000/subgraphs/name/harmony/battleship3
+documents: "./src/**/*.graphql"
+generates:
+  ./src/graphql/generated.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-apollo-angular:
+          addExplicitOverride: true

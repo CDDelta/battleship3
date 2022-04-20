@@ -1,15 +1,36 @@
 <div class="d-flex justify-content-between align-items-center my-3">
-    <div>
-        <h1>Pending Games</h1>
-        <p class="m-0">Click a game to join!</p>
-    </div>
-    <div class="text-end flex-grow-1">
-        <a class="btn btn-primary m-0" routerLink="/games/create">Create game</a>
-    </div>
+  <div>
+    <h1>Started Games</h1>
+    <p class="m-0">Click a game to join!</p>
+  </div>
+  <div class="text-end flex-grow-1">
+    <a class="btn btn-primary m-0" routerLink="/games/create">Create game</a>
+  </div>
 </div>
 
-<div class="list-group">
-    <a class="list-group-item list-group-item-action" routerLink="/games/12/join">A second link item</a>
-    <a class="list-group-item list-group-item-action">A third link item</a>
-    <a class="list-group-item list-group-item-action">A fourth link item</a>
-</div>
+<ng-container
+  *ngIf="startedGames$ | async; else loadingStartedGames; let startedGames"
+>
+  <div *ngIf="startedGames.length > 0; else noStartedGames" class="list-group">
+    <a
+      *ngFor="let game of startedGames"
+      class="list-group-item list-group-item-action"
+      routerLink="/games/{{ game.id }}/join"
+      >Started by: {{ game.startedBy }}
+    </a>
+  </div>
+
+  <ng-template #noStartedGames>
+    <div class="text-center my-5">
+      <p>No started games to show</p>
+    </div>
+  </ng-template>
+</ng-container>
+
+<ng-template #loadingStartedGames>
+  <div class="text-center my-5">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</ng-template>

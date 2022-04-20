@@ -1,0 +1,6 @@
+query StartedGames {
+  games(where: { status: STARTED }) {
+    id
+    startedBy
+  }
+}
