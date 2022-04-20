@@ -1,6 +1,8 @@
 {
   "name": "battleship3-contracts",
   "scripts": {
-    "build": "forge build"
+    "build": "forge build",
+    "deploy:verifiers": "sh ./scripts/deploy-verifiers.sh",
+    "deploy:game": "sh ./scripts/deploy-game.sh"
   }
 }
