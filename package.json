@@ -2,6 +2,8 @@
   "name": "battleship3",
   "workspaces": [
     "circuits",
-    "contracts"
+    "contracts",
+    "frontend",
+    "subgraph"
   ]
 }
