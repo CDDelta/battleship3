@@ -6,9 +6,9 @@ dataSources:
     name: Game
     network: testnet
     source:
-      address: '0x5fd201a1dce40e4bcc6b4c10f3960598ff73545f'
+      address: '0xfb4ed1886deb4f1ff328bc5ac30240b5074fe8c8'
       abi: Game
-      startBlock: 24237304
+      startBlock: 24324674
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5

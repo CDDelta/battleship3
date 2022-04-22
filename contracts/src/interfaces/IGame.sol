@@ -36,28 +36,29 @@ interface IGame {
         );
 
     function startGame(
+        uint256 _boardHash,
         uint256[2] memory a,
         uint256[2][2] memory b,
-        uint256[2] memory c,
-        uint256[1] memory input
+        uint256[2] memory c
     ) external;
 
     function joinGame(
         uint256 _gameId,
+        uint256 _boardHash,
         uint256[2] memory a,
         uint256[2][2] memory b,
-        uint256[2] memory c,
-        uint256[1] memory input
+        uint256[2] memory c
     ) external;
 
-    function playFirstTurn(uint256 _gameId, uint256 _shotIndex) external;
+    function playFirstTurn(uint256 _gameId, uint256 _turnShotIndex) external;
 
     function playTurn(
         uint256 _gameId,
-        uint256 _nextShotIndex,
+        uint256 _hitShipId,
+        uint256 _prevTurnShotIndex,
+        uint256 _turnShotIndex,
         uint256[2] memory a,
         uint256[2][2] memory b,
-        uint256[2] memory c,
-        uint256[3] memory input
+        uint256[2] memory c
     ) external;
 }

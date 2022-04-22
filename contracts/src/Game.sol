@@ -32,23 +32,25 @@ contract Game is IGame {
             address _winner
         )
     {
-        _participants = games[_gameId].participants;
-        _boards = games[_gameId].boards;
-        _turn = games[_gameId].turn;
-        _hits = games[_gameId].hits;
-        _winner = games[_gameId].winner;
+        Game storage game = games[_gameId];
+
+        _participants = game.participants;
+        _boards = game.boards;
+        _turn = game.turn;
+        _hits = game.hits;
+        _winner = game.winner;
     }
 
     function startGame(
+        uint256 _boardHash,
         uint256[2] memory a,
         uint256[2][2] memory b,
-        uint256[2] memory c,
-        uint256[1] memory input
+        uint256[2] memory c
     ) external {
-        require(boardSetupVerifier.verifyProof(a, b, c, input), "Invalid ship configuration!");
+        require(boardSetupVerifier.verifyProof(a, b, c, [_boardHash]), "Invalid ship configuration!");
 
         games[gameIndex].participants[0] = msg.sender;
-        games[gameIndex].boards[0] = input[0];
+        games[gameIndex].boards[0] = _boardHash;
 
         emit Started(gameIndex, msg.sender);
 
@@ -57,42 +59,43 @@ contract Game is IGame {
 
     function joinGame(
         uint256 _gameId,
+        uint256 _boardHash,
         uint256[2] memory a,
         uint256[2][2] memory b,
-        uint256[2] memory c,
-        uint256[1] memory input
+        uint256[2] memory c
     ) external {
         Game storage game = games[_gameId];
 
         require(game.participants[1] == address(0), "Game already full!");
-        require(boardSetupVerifier.verifyProof(a, b, c, input), "Invalid ship configuration!");
+        require(boardSetupVerifier.verifyProof(a, b, c, [_boardHash]), "Invalid ship configuration!");
 
         game.participants[1] = msg.sender;
-        game.boards[1] = input[0];
+        game.boards[1] = _boardHash;
 
         emit Joined(_gameId, msg.sender);
     }
 
-    function playFirstTurn(uint256 _gameId, uint256 _shotIndex) external {
+    function playFirstTurn(uint256 _gameId, uint256 _turnShotIndex) external {
         Game storage game = games[_gameId];
 
         require(game.turn == 0, "Not the first turn!");
         require(msg.sender == game.participants[0], "Not turn!");
-        require(_shotIndex < 100, "Shot coordinates invalid!");
+        require(_turnShotIndex < 100, "Shot coordinates invalid!");
 
-        game.shots[_shotIndex] = game.turn;
+        game.shots[_turnShotIndex] = game.turn;
         game.turn++;
 
-        emit ShotFired(_gameId, uint8(_shotIndex));
+        emit ShotFired(_gameId, uint8(_turnShotIndex));
     }
 
     function playTurn(
         uint256 _gameId,
-        uint256 _nextShotIndex,
+        uint256 _hitShipId,
+        uint256 _prevTurnShotIndex,
+        uint256 _turnShotIndex,
         uint256[2] memory a,
         uint256[2][2] memory b,
-        uint256[2] memory c,
-        uint256[3] memory input
+        uint256[2] memory c
     ) external {
         Game storage game = games[_gameId];
 
@@ -102,27 +105,26 @@ contract Game is IGame {
         require(game.turn > 0, "The first turn!");
         require(msg.sender == game.participants[currPlayerIndex], "Not turn!");
         require(game.winner == address(0), "Game already over!");
-        require(_nextShotIndex < 100, "Next shot coordinates invalid!");
+        require(_turnShotIndex < 100, "Next shot coordinates invalid!");
         require(
-            input[1] == game.boards[prevPlayerIndex] &&
-            game.turn - 1 == game.shots[input[2] + prevPlayerIndex * 100] &&
-            fireShotVerifier.verifyProof(a, b, c, input), "Invalid proof!"
+            game.turn - 1 == game.shots[_prevTurnShotIndex + prevPlayerIndex * 100] &&
+            fireShotVerifier.verifyProof(a, b, c, [_hitShipId, game.boards[prevPlayerIndex], _prevTurnShotIndex]), "Invalid proof!"
         );
 
-        if (input[0] != 0) {
+        if (_hitShipId != 0) {
             game.hits[prevPlayerIndex]++;
         }
 
-        emit ShotLanded(_gameId, uint8(input[0]));
+        emit ShotLanded(_gameId, uint8(_hitShipId));
 
         if (game.hits[prevPlayerIndex] >= WIN_HIT_COUNT) {
             game.winner = game.participants[prevPlayerIndex];
             emit Won(_gameId, game.winner);
         } else {
-            require(game.shots[_nextShotIndex + currPlayerIndex * 100] == 0, "Shots must be unique!");
+            require(game.shots[_turnShotIndex + currPlayerIndex * 100] == 0, "Shots must be unique!");
 
-            game.shots[_nextShotIndex + currPlayerIndex * 100] = game.turn;
-            emit ShotFired(_gameId, uint8(_nextShotIndex));
+            game.shots[_turnShotIndex + currPlayerIndex * 100] = game.turn;
+            emit ShotFired(_gameId, uint8(_turnShotIndex));
             game.turn++;
         }
     }
