@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { firstValueFrom, map, shareReplay } from 'rxjs';
 import { WalletService } from 'src/app/services/wallet.service';
 import { Game__factory } from 'src/contracts';
+import { StartedEvent } from 'src/contracts/IGame';
 import { environment } from 'src/environments/environment';
 import { BoardSetupProof, FireShotProof } from './game-prover.service';
 
@@ -32,9 +33,15 @@ export class GameContractService {
       .startGame(boardHash, pi_a, pi_b, pi_c)
       .then((tx) => tx.wait(TX_CONFIRMATION_COUNT));
 
-    console.log(receipt);
+    const startedEvent = receipt.events?.find(
+      (event) => event.event === 'Started',
+    ) as StartedEvent | undefined;
 
-    return BigInt(123456789);
+    if (!startedEvent) {
+      throw Error('Game started event not found!');
+    }
+
+    return startedEvent.args._gameId.toBigInt();
   }
 
   async joinGame(

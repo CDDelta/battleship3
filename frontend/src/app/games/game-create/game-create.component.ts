@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { GameContractService } from '../services/game-contract.service';
 import { GameProverService } from '../services/game-prover.service';
 
@@ -11,6 +12,7 @@ export class GameCreateComponent implements OnInit {
   constructor(
     private readonly gameProver: GameProverService,
     private readonly gameContract: GameContractService,
+    private readonly router: Router,
   ) {}
 
   ngOnInit(): void {}
@@ -27,6 +29,8 @@ export class GameCreateComponent implements OnInit {
       123121n,
     );
 
-    await this.gameContract.startGame(proof);
+    const gameId = await this.gameContract.startGame(proof);
+
+    await this.router.navigate(['games', gameId, 'play']);
   }
 }

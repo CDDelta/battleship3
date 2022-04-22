@@ -16,7 +16,9 @@
       *ngFor="let game of startedGames"
       class="list-group-item list-group-item-action"
       routerLink="/games/{{ game.id }}/join"
-      >Started by: {{ game.startedBy }}
+    >
+      <div class="fw-bold">Game {{ game.id }}</div>
+      <p class="m-0">Started by: {{ game.startedBy }}</p>
     </a>
   </div>
 
