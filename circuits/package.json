@@ -1,7 +1,7 @@
 {
   "name": "battleship3-circuits",
   "scripts": {
-    "build:circuits": "sh scripts/compile-circuits.sh",
+    "build:circuits": "sh ./scripts/compile-circuits.sh",
     "setup:download-ptau": "sh ./scripts/download-ptau.sh",
     "setup:mock-groth16-setup": "sh ./scripts/mock-groth16-setup.sh",
     "generate:witnesses": "sh ./scripts/generate-witnesses.sh",
