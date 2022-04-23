@@ -6,7 +6,8 @@
     "setup:mock-groth16-setup": "sh ./scripts/mock-groth16-setup.sh",
     "generate:witnesses": "sh ./scripts/generate-witnesses.sh",
     "generate:proofs": "sh ./scripts/generate-proofs.sh",
-    "generate:verifiers": "sh ./scripts/generate-verifiers.sh"
+    "generate:verifiers": "sh ./scripts/generate-verifiers.sh",
+    "verify-proofs": "sh ./scripts/verify-proofs.sh"
   },
   "dependencies": {
     "circomlib": "^2.0.3"
