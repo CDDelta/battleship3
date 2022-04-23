@@ -2,12 +2,14 @@
   "name": "battleship3-circuits",
   "scripts": {
     "build:circuits": "sh scripts/compile-circuits.sh",
-    "setup:mock-ptau": "sh ./scripts/mock-ptau.sh",
+    "setup:download-ptau": "sh ./scripts/download-ptau.sh",
     "setup:mock-groth16-setup": "sh ./scripts/mock-groth16-setup.sh",
     "generate:witnesses": "sh ./scripts/generate-witnesses.sh",
     "generate:proofs": "sh ./scripts/generate-proofs.sh",
     "generate:verifiers": "sh ./scripts/generate-verifiers.sh",
-    "verify-proofs": "sh ./scripts/verify-proofs.sh"
+    "verify-proofs": "sh ./scripts/verify-proofs.sh",
+    "full-build": "npm run build:circuits && npm run setup:download-ptau && npm run setup:mock-groth16-setup",
+    "full-prove": "npm run generate:witnesses && npm run generate:proofs && npm run verify-proofs"
   },
   "dependencies": {
     "circomlib": "^2.0.3"

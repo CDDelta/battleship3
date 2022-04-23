@@ -1,3 +1,4 @@
+*.ptau
 *_verification_key.json
 *-proof.json
 *-public.json
