@@ -6,6 +6,7 @@ import {
   Started,
   Won,
 } from '../types/Game/Game';
+import { getShotId } from './utils';
 import { Game, Shot } from '../types/schema';
 
 export function handleGameStarted(event: Started): void {
@@ -46,7 +47,7 @@ export function handleShotFired(event: ShotFired): void {
     throw new Error('Game could not be found!');
   }
 
-  const shotId = gameId + game.turn.toString();
+  const shotId = getShotId(gameId, game.turn);
   const shot = new Shot(shotId);
 
   shot.game = gameId;
@@ -71,7 +72,7 @@ export function handleShotLanded(event: ShotLanded): void {
     throw new Error('Game could not be found!');
   }
 
-  const shotId = gameId + (game.turn - 1).toString();
+  const shotId = getShotId(gameId, game.turn - 1);
   const shot = Shot.load(shotId);
 
   if (!shot) {
