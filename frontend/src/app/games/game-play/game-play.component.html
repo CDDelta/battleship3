@@ -71,6 +71,7 @@
       <ng-container *ngFor="let column of columns; index as x">
         <td
           *ngIf="playerShotsBoard[x][y] as shot; else noPlayerShotCell"
+          class="shot-present"
           [class.shot-miss]="shot.status === ShotStatus.Miss"
           [class.shot-hit]="
             shot.status !== ShotStatus.Unknown &&
