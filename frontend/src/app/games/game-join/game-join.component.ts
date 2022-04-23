@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { firstValueFrom, map, shareReplay } from 'rxjs';
+import { BehaviorSubject, first, firstValueFrom, map, shareReplay } from 'rxjs';
 import { WalletService } from 'src/app/services/wallet.service';
 import { FleetSetupBoardComponent } from '../components/fleet-setup-board/fleet-setup-board.component';
 import { GameContractService } from '../services/game-contract.service';
@@ -25,6 +25,8 @@ export class GameJoinComponent implements OnInit {
   @ViewChild(FleetSetupBoardComponent, { static: true })
   fleetSetupBoard!: FleetSetupBoardComponent;
 
+  readonly playerJoiningGame$ = new BehaviorSubject(false);
+
   constructor(
     private readonly wallet: WalletService,
     private readonly gameProver: GameProverService,
@@ -37,28 +39,41 @@ export class GameJoinComponent implements OnInit {
   ngOnInit(): void {}
 
   async joinGame(): Promise<void> {
-    const playerAddress = await firstValueFrom(this.wallet.address$);
-
-    const ships = await firstValueFrom(
-      this.fleetSetupBoard.fleetConfiguration$,
-    ).then((value) => value as ShipConfigurations);
-
-    const trapdoor = randomBigInt();
-
-    const proof = await this.gameProver.generateBoardSetupProof(
-      ships,
-      trapdoor,
+    const playerAlreadyJoiningGame = await firstValueFrom(
+      this.playerJoiningGame$,
     );
+    if (playerAlreadyJoiningGame) {
+      return;
+    }
 
-    const gameId = await firstValueFrom(this.gameId$);
-    await this.gameContract.joinGame(gameId, proof);
+    this.playerJoiningGame$.next(true);
 
-    await this.gameStorage.storeGameBoard(gameId, playerAddress!, {
-      ships,
-      trapdoor,
-      hash: proof.boardHash,
-    });
+    try {
+      const playerAddress = await firstValueFrom(this.wallet.address$);
 
-    await this.router.navigate(['games', gameId, 'play']);
+      const ships = await firstValueFrom(
+        this.fleetSetupBoard.fleetConfiguration$,
+      ).then((value) => value as ShipConfigurations);
+
+      const trapdoor = randomBigInt();
+
+      const proof = await this.gameProver.generateBoardSetupProof(
+        ships,
+        trapdoor,
+      );
+
+      const gameId = await firstValueFrom(this.gameId$);
+      await this.gameContract.joinGame(gameId, proof);
+
+      await this.gameStorage.storeGameBoard(gameId, playerAddress!, {
+        ships,
+        trapdoor,
+        hash: proof.boardHash,
+      });
+
+      await this.router.navigate(['games', gameId, 'play']);
+    } finally {
+      this.playerJoiningGame$.next(false);
+    }
   }
 }

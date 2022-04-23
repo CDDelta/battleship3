@@ -11,3 +11,19 @@
     Create game
   </button>
 </div>
+
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+  <div
+    id="liveToast"
+    class="toast"
+    [class.show]="playerCreatingGame$ | async"
+    role="alert"
+    aria-live="assertive"
+    aria-atomic="true"
+  >
+    <div class="toast-header">
+      <strong class="me-auto">Battleship3</strong>
+    </div>
+    <div class="toast-body">Creating game...</div>
+  </div>
+</div>

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
 import {
+  BehaviorSubject,
   combineLatest,
   filter,
   firstValueFrom,
@@ -178,6 +179,8 @@ export class GamePlayComponent implements OnInit {
     }),
   );
 
+  readonly playerFiringShot$ = new BehaviorSubject(false);
+
   readonly playerShots$ = combineLatest([this.game$, this.isHost$]).pipe(
     map(
       ([game, isHost]) =>
@@ -261,38 +264,54 @@ export class GamePlayComponent implements OnInit {
   ngOnInit(): void {}
 
   async fireShot(): Promise<void> {
-    const isFirstTurn = await firstValueFrom(this.game$).then(
-      (game) => game?.turn === 0,
-    );
-
-    const gameId = await firstValueFrom(this.gameId$).then((v) => BigInt(v));
-    const currentTurnShotIndex = this.playerShotSelection.selected[0];
-
-    if (isFirstTurn) {
-      await this.gameContract.playFirstTurn(gameId, currentTurnShotIndex);
-    } else {
-      const playerBoard = await firstValueFrom(this.playerBoard$).then(
-        (v) => v!,
-      );
-      const lastShot = await firstValueFrom(this.lastGameShot$).then((v) => v!);
-      const prevTurnShotIndex = shotCoordinatesToIndex(lastShot.x, lastShot.y);
-
-      const proof = await this.gameProver.generateFireShotProof(
-        playerBoard.ships,
-        playerBoard.trapdoor,
-        playerBoard.hash,
-        prevTurnShotIndex,
-      );
-
-      await this.gameContract.playTurn(
-        gameId,
-        prevTurnShotIndex,
-        currentTurnShotIndex,
-        proof,
-      );
+    const playerAlreadyFiring = await firstValueFrom(this.playerFiringShot$);
+    if (playerAlreadyFiring) {
+      return;
     }
 
-    this.playerShotSelection.clear();
+    this.playerFiringShot$.next(true);
+
+    try {
+      const isFirstTurn = await firstValueFrom(this.game$).then(
+        (game) => game?.turn === 0,
+      );
+
+      const gameId = await firstValueFrom(this.gameId$).then((v) => BigInt(v));
+      const currentTurnShotIndex = this.playerShotSelection.selected[0];
+
+      if (isFirstTurn) {
+        await this.gameContract.playFirstTurn(gameId, currentTurnShotIndex);
+      } else {
+        const playerBoard = await firstValueFrom(this.playerBoard$).then(
+          (v) => v!,
+        );
+        const lastShot = await firstValueFrom(this.lastGameShot$).then(
+          (v) => v!,
+        );
+        const prevTurnShotIndex = shotCoordinatesToIndex(
+          lastShot.x,
+          lastShot.y,
+        );
+
+        const proof = await this.gameProver.generateFireShotProof(
+          playerBoard.ships,
+          playerBoard.trapdoor,
+          playerBoard.hash,
+          prevTurnShotIndex,
+        );
+
+        await this.gameContract.playTurn(
+          gameId,
+          prevTurnShotIndex,
+          currentTurnShotIndex,
+          proof,
+        );
+      }
+
+      this.playerShotSelection.clear();
+    } finally {
+      this.playerFiringShot$.next(false);
+    }
   }
 
   selectPlayerTurnShotLocation(x: number, y: number): void {
