@@ -83,9 +83,10 @@ contract Game is IGame {
         require(_turnShotIndex < 100, "Shot coordinates invalid!");
 
         game.shots[_turnShotIndex] = game.turn;
-        game.turn++;
 
         emit ShotFired(_gameId, uint8(_turnShotIndex));
+
+        game.turn++;
     }
 
     function playTurn(
@@ -106,10 +107,8 @@ contract Game is IGame {
         require(msg.sender == game.participants[currPlayerIndex], "Not turn!");
         require(game.winner == address(0), "Game already over!");
         require(_turnShotIndex < 100, "Next shot coordinates invalid!");
-        require(
-            game.turn - 1 == game.shots[_prevTurnShotIndex + prevPlayerIndex * 100] &&
-            fireShotVerifier.verifyProof(a, b, c, [_hitShipId, game.boards[prevPlayerIndex], _prevTurnShotIndex]), "Invalid proof!"
-        );
+        require(game.turn - 1 == game.shots[_prevTurnShotIndex + prevPlayerIndex * 100], "Incorrect shot for previous turn provided!");
+        require(fireShotVerifier.verifyProof(a, b, c, [_hitShipId, game.boards[prevPlayerIndex], _prevTurnShotIndex]), "Invalid proof!");
 
         if (_hitShipId != 0) {
             game.hits[prevPlayerIndex]++;
