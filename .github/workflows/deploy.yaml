@@ -19,6 +19,10 @@ jobs:
         run: npm ci -w battleship3-frontend
       - name: Install Angular CLI
         run: npm install -g @angular/cli
+      - name: Run code builders
+        run: |
+          npm run generate:graphql-typings
+          npm run generate:contract-typings
       - name: Build
         run: npm run build
         working-directory: frontend
