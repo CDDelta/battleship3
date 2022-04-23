@@ -13,8 +13,13 @@ td {
 
 #player-ships-board {
   td {
-    &.shot-present {
-      background-color: $gray-500;
+    &.shot-miss {
+      background-color: $gray-300;
+    }
+
+    &.shot-hit {
+      color: $gray-100;
+      background-color: $red;
     }
   }
 }
@@ -22,11 +27,19 @@ td {
 #player-shots-board {
   td {
     &.selected {
+      background-color: $gray-700;
+    }
+
+    &:not(.selected):hover {
       background-color: $gray-500;
     }
 
-    &:not(.shot-present):not(.selected):hover {
+    &.shot-miss {
       background-color: $gray-300;
+    }
+
+    &.shot-hit {
+      background-color: $green;
     }
   }
 }

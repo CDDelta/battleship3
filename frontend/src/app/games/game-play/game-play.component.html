@@ -40,11 +40,15 @@
         <th>{{ row }}</th>
         <ng-container *ngFor="let column of columns; index as x">
           <td
-            *ngIf="{ present: !!opponentShotsBoard[x][y] } as shot"
-            [class.shot-present]="shot.present"
+            *ngIf="{
+              present: !!opponentShotsBoard[x][y],
+              ship: playerShipOccupancyBoard[x][y]
+            } as shot"
+            [class.shot-miss]="shot.present && !shot.ship"
+            [class.shot-hit]="shot.present && shot.ship"
           >
-            <span *ngIf="playerShipOccupancyBoard[x][y] as ship">
-              {{ ship.id }}
+            <span *ngIf="shot.ship">
+              {{ shot.ship.id }}
             </span>
           </td>
         </ng-container>
@@ -67,7 +71,11 @@
       <ng-container *ngFor="let column of columns; index as x">
         <td
           *ngIf="playerShotsBoard[x][y] as shot; else noPlayerShotCell"
-          class="shot-present"
+          [class.shot-miss]="shot.status === ShotStatus.Miss"
+          [class.shot-hit]="
+            shot.status !== ShotStatus.Unknown &&
+            shot.status !== ShotStatus.Miss
+          "
           [ngSwitch]="shot.status"
         >
           <span *ngSwitchCase="ShotStatus.Unknown">U</span>
