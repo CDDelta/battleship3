@@ -6,9 +6,9 @@
     "setup:mock-groth16-setup": "sh ./scripts/mock-groth16-setup.sh",
     "generate:witnesses": "sh ./scripts/generate-witnesses.sh",
     "generate:proofs": "sh ./scripts/generate-proofs.sh",
-    "generate:verifiers": "sh ./scripts/generate-verifiers.sh",
+    "generate:verifier-contracts": "sh ./scripts/generate-verifier-contracts.sh",
     "verify-proofs": "sh ./scripts/verify-proofs.sh",
-    "full-build": "npm run build:circuits && npm run setup:download-ptau && npm run setup:mock-groth16-setup",
+    "full-build": "npm run build:circuits && npm run setup:download-ptau && npm run setup:mock-groth16-setup && npm run generate:verifier-contracts",
     "full-prove": "npm run generate:witnesses && npm run generate:proofs && npm run verify-proofs"
   },
   "dependencies": {
