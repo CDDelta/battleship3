@@ -30,7 +30,7 @@ td {
       background-color: $gray-700;
     }
 
-    &:not(.selected):hover {
+    &:not(.selected):not(.shot-miss):not(.shot-hit):hover {
       background-color: $gray-500;
     }
 
@@ -39,6 +39,7 @@ td {
     }
 
     &.shot-hit {
+      color: $gray-100;
       background-color: $green;
     }
   }
