@@ -23,6 +23,7 @@ jobs:
         run: |
           npm run generate:graphql-typings
           npm run generate:contract-typings
+        working-directory: frontend
       - name: Build
         run: npm run build
         working-directory: frontend
