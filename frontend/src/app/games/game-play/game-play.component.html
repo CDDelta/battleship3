@@ -1,43 +1,94 @@
-<h1 class="text-center">Your turn!</h1>
+<ng-container [ngSwitch]="turnStatus$ | async">
+  <h1 *ngSwitchCase="TurnStatus.WaitingForOpponent" class="text-center">
+    Waiting for opponent...
+  </h1>
+  <h1 *ngSwitchCase="TurnStatus.PlayerTurn" class="text-center">Your turn!</h1>
+  <h1 *ngSwitchCase="TurnStatus.OpponentTurn" class="text-center">
+    Waiting for opponent turn...
+  </h1>
+  <h1 *ngSwitchCase="TurnStatus.PlayerWon" class="text-center">You won!</h1>
+  <h1 *ngSwitchCase="TurnStatus.PlayerLost" class="text-center">You lost!</h1>
+</ng-container>
 
 <div class="d-flex justify-content-between">
-    <div>
-        <p class="h5 mb-1">Your Ship Cells Left</p>
-        <p class="h4">4</p>
-    </div>
+  <div>
+    <p class="h5 mb-1">Your Ship Cells Left</p>
+    <p class="h4">{{ playerCellsLeft$ | async }}</p>
+  </div>
 
-    <div class="text-end">
-        <p class="h5 mb-1">Opponent Ship Cells Left</p>
-        <p class="h4">5</p>
-    </div>
+  <div class="text-end">
+    <p class="h5 mb-1">Opponent Ship Cells Left</p>
+    <p class="h4">{{ opponentCellsLeft$ | async }}</p>
+  </div>
 </div>
 
 <div class="d-flex justify-content-center">
-    <table class="flex-1 m-5">
-        <tr>
-            <th></th>
-            <th *ngFor="let column of columns">{{ column }}</th>
-        </tr>
+  <table
+    *ngIf="opponentShotsBoard$ | async as opponentShotsBoard"
+    class="flex-1 m-5"
+  >
+    <tr>
+      <th></th>
+      <th *ngFor="let column of columns">{{ column }}</th>
+    </tr>
 
-        <tr *ngFor="let row of rows">
-            <th>{{ row }}</th>
-            <td *ngFor="let column of columns"></td>
-        </tr>
-    </table>
+    <tr *ngFor="let row of rows; index as y">
+      <th>{{ row }}</th>
+      <td *ngFor="let column of columns; index as x">
+        <ng-container
+          *ngIf="opponentShotsBoard[x][y] as shot"
+          [ngSwitch]="shot.status"
+        >
+          <p *ngSwitchCase="ShotStatus.Carrier">C</p>
+        </ng-container>
+      </td>
+    </tr>
+  </table>
 
-    <table class="flex-1 m-5">
-        <tr>
-            <th></th>
-            <th *ngFor="let column of columns">{{ column }}</th>
-        </tr>
+  <table
+    id="player-shots-board"
+    *ngIf="playerShotsBoard$ | async as playerShotsBoard"
+    class="flex-1 m-5"
+  >
+    <tr>
+      <th></th>
+      <th *ngFor="let column of columns">{{ column }}</th>
+    </tr>
 
-        <tr *ngFor="let row of rows">
-            <th>{{ row }}</th>
-            <td *ngFor="let column of columns"></td>
-        </tr>
-    </table>
+    <tr *ngFor="let row of rows; index as y">
+      <th>{{ row }}</th>
+      <ng-container *ngFor="let column of columns; index as x">
+        <td
+          *ngIf="playerShotsBoard[x][y] as shot; else noPlayerShotCell"
+          class="shot-present"
+          [ngSwitch]="shot.status"
+        >
+          <span *ngSwitchCase="ShotStatus.Unknown">U</span>
+          <span *ngSwitchCase="ShotStatus.Miss">M</span>
+          <span *ngSwitchCase="ShotStatus.Carrier">CA</span>
+          <span *ngSwitchCase="ShotStatus.Battleship">B</span>
+          <span *ngSwitchCase="ShotStatus.Cruiser">CR</span>
+          <span *ngSwitchCase="ShotStatus.Submarine">S</span>
+          <span *ngSwitchCase="ShotStatus.Destroyer">D</span>
+        </td>
+
+        <ng-template #noPlayerShotCell>
+          <td
+            (click)="selectPlayerTurnShotLocation(x, y)"
+            [class.selected]="playerShotLocationIsSelected(x, y)"
+          ></td>
+        </ng-template>
+      </ng-container>
+    </tr>
+  </table>
 </div>
 
 <div class="text-center">
-    <button class="btn btn-primary">Fire shot</button>
-</div> 
+  <button
+    class="btn btn-primary"
+    (click)="fireShot()"
+    [disabled]="!(playerCanFireShot$ | async)"
+  >
+    Fire shot
+  </button>
+</div>

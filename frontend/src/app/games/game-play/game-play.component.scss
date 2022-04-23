@@ -1,15 +1,24 @@
 @import 'src/styles/variables';
 
-th, td {
-    width: 48px;
-    height: 48px;
-    text-align: center;
+th,
+td {
+  width: 48px;
+  height: 48px;
+  text-align: center;
 }
 
 td {
-    border: 1px solid $gray-900;
+  border: 1px solid $gray-900;
+}
 
-    &:hover {
-        background-color: $gray-300;
+#player-shots-board {
+  td {
+    &.selected {
+      background-color: $gray-500;
     }
+
+    &:not(.shot-present):not(.selected):hover {
+      background-color: $gray-300;
+    }
+  }
 }

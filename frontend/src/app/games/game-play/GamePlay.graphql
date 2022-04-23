@@ -1,0 +1,20 @@
+query GamePlay($gameId: ID!) {
+  game(id: $gameId) {
+    id
+    status
+    turn
+
+    startedBy
+    joinedBy
+    wonBy
+
+    shots(orderBy: turn, orderDirection: asc) {
+      id
+      status
+      turn
+
+      x
+      y
+    }
+  }
+}
