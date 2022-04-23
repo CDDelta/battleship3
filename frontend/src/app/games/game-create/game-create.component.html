@@ -3,5 +3,11 @@
 <app-fleet-setup-board></app-fleet-setup-board>
 
 <div class="text-center">
-  <button class="btn btn-primary" (click)="createGame()">Create game</button>
+  <button
+    class="btn btn-primary"
+    (click)="createGame()"
+    [disabled]="!(fleetSetupBoard.fleetComplete$ | async)"
+  >
+    Create game
+  </button>
 </div>

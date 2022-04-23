@@ -19,6 +19,15 @@ import {
 } from 'src/graphql/generated';
 import { GameContractService } from '../services/game-contract.service';
 import { GameProverService } from '../services/game-prover.service';
+import {
+  GAME_BOARD_WIDTH,
+  GAME_COLUMN_NAMES,
+  GAME_ROW_NAMES,
+  GAME_SHIPS,
+  GAME_STARTING_SHIP_CELL_COUNT,
+  Ship,
+} from '../game-constants';
+import { GameStorageService } from '../services/game-storage.service';
 
 enum TurnStatus {
   WaitingForOpponent,
@@ -28,16 +37,13 @@ enum TurnStatus {
   PlayerLost,
 }
 
-const STARTING_SHIP_CELL_COUNT = 17;
-const BOARD_WIDTH = 10;
-
 type Game = NonNullable<GamePlayQuery['game']>;
 type Shot = NonNullable<Game['shots']>[number];
 
 const SHOT_HIT_PREDICATE = (shot: Shot) =>
   shot.status !== ShotStatus.Miss && shot.status !== ShotStatus.Unknown;
 
-const SHOTS_TO_BOARD_MAP = (shots: Shot[]) => {
+function mapShotsToBoard(shots: Shot[]): Shot[][] {
   const board: Shot[][] = [];
 
   for (let i = 0; i < 10; i++) {
@@ -49,10 +55,10 @@ const SHOTS_TO_BOARD_MAP = (shots: Shot[]) => {
   }
 
   return board;
-};
+}
 
 function shotCoordinatesToIndex(x: number, y: number): bigint {
-  return BigInt(x + y * BOARD_WIDTH);
+  return BigInt(x + y * GAME_BOARD_WIDTH);
 }
 
 @Component({
@@ -94,11 +100,6 @@ export class GamePlayComponent implements OnInit {
     shareReplay(1),
   );
 
-  readonly isPlayerTurn$ = combineLatest([this.game$, this.isHost$]).pipe(
-    map(([game, isHost]) => game.turn % 2 === (isHost ? 0 : 1)),
-    shareReplay(1),
-  );
-
   readonly turnStatus$ = combineLatest([
     this.wallet.address$,
     this.game$,
@@ -121,6 +122,60 @@ export class GamePlayComponent implements OnInit {
       }
     }),
     shareReplay(1),
+  );
+
+  readonly isPlayerTurn$ = this.turnStatus$.pipe(
+    map((turnStatus) => turnStatus === TurnStatus.PlayerTurn),
+    shareReplay(1),
+  );
+
+  readonly playerBoard$ = combineLatest([
+    this.gameId$,
+    this.wallet.address$,
+  ]).pipe(
+    switchMap(([gameId, playerAddress]) =>
+      this.gameStorage.getGameBoard(BigInt(gameId), playerAddress!),
+    ),
+    shareReplay(1),
+  );
+
+  readonly playerShipOccupancyBoard$ = this.playerBoard$.pipe(
+    map((board) => {
+      const occupancyBoard = [];
+      for (let i = 0; i < GAME_BOARD_WIDTH; i++) {
+        occupancyBoard.push(
+          new Array<Ship | undefined>(GAME_BOARD_WIDTH).fill(undefined),
+        );
+      }
+
+      if (!board) {
+        return occupancyBoard;
+      }
+
+      for (let i = 0; i < 5; i++) {
+        const ship = board.ships[i];
+        const shipLength = GAME_SHIPS[i].length;
+
+        const shipStartX = Number(ship[0]);
+        const shipStartY = Number(ship[1]);
+        const shipIsHorizontal = ship[2] === 0n;
+
+        const shipAxisStart = shipIsHorizontal ? shipStartX : shipStartY;
+        const shipAxisEnd = shipAxisStart + shipLength;
+
+        for (
+          let j = shipIsHorizontal ? shipStartX : shipStartY;
+          j < shipAxisEnd + 1;
+          j++
+        ) {
+          const x = shipIsHorizontal ? j : shipStartX;
+          const y = shipIsHorizontal ? shipStartY : j;
+          occupancyBoard[x][y] = GAME_SHIPS[i];
+        }
+      }
+
+      return occupancyBoard;
+    }),
   );
 
   readonly playerShots$ = combineLatest([this.game$, this.isHost$]).pipe(
@@ -150,22 +205,22 @@ export class GamePlayComponent implements OnInit {
   );
 
   readonly playerShotsBoard$ = this.playerShots$.pipe(
-    map(SHOTS_TO_BOARD_MAP),
+    map(mapShotsToBoard),
     shareReplay(1),
   );
 
   readonly opponentShotsBoard$ = this.opponentShots$.pipe(
-    map(SHOTS_TO_BOARD_MAP),
+    map(mapShotsToBoard),
     shareReplay(1),
   );
 
   readonly playerCellsLeft$ = this.opponentHitShots$.pipe(
-    map((shots) => STARTING_SHIP_CELL_COUNT - shots?.length),
+    map((shots) => GAME_STARTING_SHIP_CELL_COUNT - shots?.length),
     shareReplay(1),
   );
 
   readonly opponentCellsLeft$ = this.playerHitShots$.pipe(
-    map((shots) => STARTING_SHIP_CELL_COUNT - shots?.length),
+    map((shots) => GAME_STARTING_SHIP_CELL_COUNT - shots?.length),
     shareReplay(1),
   );
 
@@ -190,14 +245,15 @@ export class GamePlayComponent implements OnInit {
     ),
   );
 
-  columns = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
-  rows = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  columns = GAME_COLUMN_NAMES;
+  rows = GAME_ROW_NAMES;
 
   constructor(
     private readonly wallet: WalletService,
     private readonly gamePlayGql: GamePlayGQL,
     private readonly gameProver: GameProverService,
     private readonly gameContract: GameContractService,
+    private readonly gameStorage: GameStorageService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
   ) {}
@@ -215,20 +271,16 @@ export class GamePlayComponent implements OnInit {
     if (isFirstTurn) {
       await this.gameContract.playFirstTurn(gameId, currentTurnShotIndex);
     } else {
+      const playerBoard = await firstValueFrom(this.playerBoard$).then(
+        (v) => v!,
+      );
       const lastShot = await firstValueFrom(this.lastGameShot$).then((v) => v!);
-
       const prevTurnShotIndex = shotCoordinatesToIndex(lastShot.x, lastShot.y);
 
       const proof = await this.gameProver.generateFireShotProof(
-        [
-          [0n, 0n, 1n],
-          [1n, 0n, 1n],
-          [2n, 0n, 1n],
-          [3n, 0n, 1n],
-          [4n, 0n, 1n],
-        ],
-        123121n,
-        9586185797208552660691153541245135727870151593614503672951940603772028063832n,
+        playerBoard.ships,
+        playerBoard.trapdoor,
+        playerBoard.hash,
         prevTurnShotIndex,
       );
 
@@ -239,6 +291,8 @@ export class GamePlayComponent implements OnInit {
         proof,
       );
     }
+
+    this.playerShotSelection.clear();
   }
 
   selectPlayerTurnShotLocation(x: number, y: number): void {

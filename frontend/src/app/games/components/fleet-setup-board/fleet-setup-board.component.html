@@ -1,20 +1,50 @@
 <div class="d-flex justify-content-center">
-    <table class="flex-2 m-5">
-        <tr>
-            <th></th>
-            <th *ngFor="let column of columns">{{ column }}</th>
-        </tr>
+  <table class="flex-2 m-5">
+    <tr>
+      <th></th>
+      <th *ngFor="let column of columns">{{ column }}</th>
+    </tr>
 
-        <tr *ngFor="let row of rows">
-            <th>{{ row }}</th>
-            <td *ngFor="let column of columns"></td>
-        </tr>
-    </table>
-    
-    <div class="card border-primary flex-1 m-5" style="max-width: 20rem;">
-        <div class="card-body">
-            <h2 class="card-title">Ships Available</h2>
-            
-        </div>
+    <tr *ngFor="let row of rows; index as y">
+      <th>{{ row }}</th>
+      <ng-container *ngFor="let column of columns; index as x">
+        <td
+          *ngIf="occupancyBoard[x][y] as ship; else noShipCell"
+          class="ship-present"
+        >
+          <span>{{ ship.id }}</span>
+        </td>
+
+        <ng-template #noShipCell>
+          <td (click)="placeSelectedShip(x, y)"></td>
+        </ng-template>
+      </ng-container>
+    </tr>
+  </table>
+
+  <div class="card border-primary flex-1 m-5" style="max-width: 20rem">
+    <h2 class="card-header">Your Fleet</h2>
+
+    <ul class="list-group list-group-flush">
+      <li
+        *ngFor="let ship of ships"
+        class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+        [class.active]="shipSelection.isSelected(ship)"
+        (click)="shipSelection.toggle(ship)"
+      >
+        {{ ship.name }} ({{ ship.id }} - {{ ship.length }})
+        <span *ngIf="hasPlacedShip(ship)" class="badge bg-secondary">✓</span>
+      </li>
+    </ul>
+
+    <div class="card-body">
+      <button
+        class="btn btn-outline-primary"
+        (click)="toggleShipPlacementOrientation()"
+      >
+        ship orientation:
+        {{ placeShipsHorizontally ? 'horizontal' : 'vertical' }}
+      </button>
     </div>
+  </div>
 </div>

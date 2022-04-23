@@ -11,6 +11,14 @@ td {
   border: 1px solid $gray-900;
 }
 
+#player-ships-board {
+  td {
+    &.shot-present {
+      background-color: $gray-500;
+    }
+  }
+}
+
 #player-shots-board {
   td {
     &.selected {

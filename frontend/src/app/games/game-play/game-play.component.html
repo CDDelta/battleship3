@@ -23,27 +23,34 @@
 </div>
 
 <div class="d-flex justify-content-center">
-  <table
-    *ngIf="opponentShotsBoard$ | async as opponentShotsBoard"
-    class="flex-1 m-5"
+  <ng-container
+    *ngIf="playerShipOccupancyBoard$ | async as playerShipOccupancyBoard"
   >
-    <tr>
-      <th></th>
-      <th *ngFor="let column of columns">{{ column }}</th>
-    </tr>
+    <table
+      id="player-ships-board"
+      *ngIf="opponentShotsBoard$ | async as opponentShotsBoard"
+      class="flex-1 m-5"
+    >
+      <tr>
+        <th></th>
+        <th *ngFor="let column of columns">{{ column }}</th>
+      </tr>
 
-    <tr *ngFor="let row of rows; index as y">
-      <th>{{ row }}</th>
-      <td *ngFor="let column of columns; index as x">
-        <ng-container
-          *ngIf="opponentShotsBoard[x][y] as shot"
-          [ngSwitch]="shot.status"
-        >
-          <p *ngSwitchCase="ShotStatus.Carrier">C</p>
+      <tr *ngFor="let row of rows; index as y">
+        <th>{{ row }}</th>
+        <ng-container *ngFor="let column of columns; index as x">
+          <td
+            *ngIf="{ present: !!opponentShotsBoard[x][y] } as shot"
+            [class.shot-present]="shot.present"
+          >
+            <span *ngIf="playerShipOccupancyBoard[x][y] as ship">
+              {{ ship.id }}
+            </span>
+          </td>
         </ng-container>
-      </td>
-    </tr>
-  </table>
+      </tr>
+    </table>
+  </ng-container>
 
   <table
     id="player-shots-board"
