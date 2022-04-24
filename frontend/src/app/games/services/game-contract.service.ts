@@ -6,7 +6,7 @@ import { StartedEvent } from 'src/contracts/IGame';
 import { environment } from 'src/environments/environment';
 import { BoardSetupProof, FireShotProof } from './game-prover.service';
 
-const TX_CONFIRMATION_COUNT = 2;
+const TX_CONFIRMATION_COUNT = 1;
 
 @Injectable({
   providedIn: 'root',
