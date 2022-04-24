@@ -1,5 +1,5 @@
-schema: http://localhost:8000/subgraphs/name/harmony/battleship3
-documents: "./src/**/*.graphql"
+schema: http://35.224.237.39:8000/subgraphs/name/harmony/battleship3
+documents: './src/**/*.graphql'
 generates:
   ./src/graphql/generated.ts:
     plugins:

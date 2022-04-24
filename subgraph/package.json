@@ -4,8 +4,8 @@
     "codegen": "graph codegen --output-dir src/types/",
     "build": "graph build",
     "start:dev": "docker compose up",
-    "create": "graph create --node http://localhost:8020 harmony/battleship3",
-    "deploy": "graph deploy --node http://localhost:8020 --ipfs http://localhost:5001 harmony/battleship3"
+    "create": "graph create --node http://35.224.237.39:8020 harmony/battleship3",
+    "deploy": "graph deploy --node http://35.224.237.39:8020 --ipfs http://35.224.237.39:5001 harmony/battleship3"
   },
   "dependencies": {
     "@graphprotocol/graph-ts": "^0.26.0"
