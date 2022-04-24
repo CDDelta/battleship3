@@ -162,7 +162,7 @@ export class GamePlayComponent implements OnInit {
         const shipIsHorizontal = ship[2] === 0n;
 
         const shipAxisStart = shipIsHorizontal ? shipStartX : shipStartY;
-        const shipAxisEnd = shipAxisStart + shipLength;
+        const shipAxisEnd = shipAxisStart + shipLength - 1;
 
         for (
           let j = shipIsHorizontal ? shipStartX : shipStartY;
