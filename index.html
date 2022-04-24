@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Battleship3</title>
+    <base href="/battleship3" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <script src="/assets/circuits/snarkjs.min.js"></script>
+    <style>
+      @import "https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600&display=swap";
+      @charset "UTF-8";
+      :root {
+        --bs-blue: #007bff;
+        --bs-indigo: #6610f2;
+        --bs-purple: #6f42c1;
+        --bs-pink: #e83e8c;
+        --bs-red: #d9534f;
+        --bs-orange: #fd7e14;
+        --bs-yellow: #f0ad4e;
+        --bs-green: #4bbf73;
+        --bs-teal: #20c997;
+        --bs-cyan: #1f9bcf;
+        --bs-white: #fff;
+        --bs-gray: #919aa1;
+        --bs-gray-dark: #343a40;
+        --bs-gray-100: #f8f9fa;
+        --bs-gray-200: #f7f7f9;
+        --bs-gray-300: #eceeef;
+        --bs-gray-400: #ced4da;
+        --bs-gray-500: #adb5bd;
+        --bs-gray-600: #919aa1;
+        --bs-gray-700: #55595c;
+        --bs-gray-800: #343a40;
+        --bs-gray-900: #1a1a1a;
+        --bs-primary: #1a1a1a;
+        --bs-secondary: #fff;
+        --bs-success: #4bbf73;
+        --bs-info: #1f9bcf;
+        --bs-warning: #f0ad4e;
+        --bs-danger: #d9534f;
+        --bs-light: #fff;
+        --bs-dark: #343a40;
+        --bs-primary-rgb: 26, 26, 26;
+        --bs-secondary-rgb: 255, 255, 255;
+        --bs-success-rgb: 75, 191, 115;
+        --bs-info-rgb: 31, 155, 207;
+        --bs-warning-rgb: 240, 173, 78;
+        --bs-danger-rgb: 217, 83, 79;
+        --bs-light-rgb: 255, 255, 255;
+        --bs-dark-rgb: 52, 58, 64;
+        --bs-white-rgb: 255, 255, 255;
+        --bs-black-rgb: 0, 0, 0;
+        --bs-body-color-rgb: 85, 89, 92;
+        --bs-body-bg-rgb: 255, 255, 255;
+        --bs-font-sans-serif: "Nunito Sans", -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif,
+          "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+        --bs-gradient: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.15),
+          rgba(255, 255, 255, 0)
+        );
+        --bs-body-font-family: var(--bs-font-sans-serif);
+        --bs-body-font-size: 1rem;
+        --bs-body-font-weight: 400;
+        --bs-body-line-height: 1.5;
+        --bs-body-color: #55595c;
+        --bs-body-bg: #fff;
+      }
+      *,
+      *:before,
+      *:after {
+        box-sizing: border-box;
+      }
+      @media (prefers-reduced-motion: no-preference) {
+        :root {
+          scroll-behavior: smooth;
+        }
+      }
+      body {
+        margin: 0;
+        font-family: var(--bs-body-font-family);
+        font-size: var(--bs-body-font-size);
+        font-weight: var(--bs-body-font-weight);
+        line-height: var(--bs-body-line-height);
+        color: var(--bs-body-color);
+        text-align: var(--bs-body-text-align);
+        background-color: var(--bs-body-bg);
+        -webkit-text-size-adjust: 100%;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+      }
+      body {
+        font-weight: 200;
+        letter-spacing: 1px;
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="styles.908d880cb4a13bcc.css"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript
+      ><link rel="stylesheet" href="styles.908d880cb4a13bcc.css"
+    /></noscript>
+  </head>
+  <body>
+    <app-root></app-root>
+    <script src="runtime.fa606e4cd1fc0101.js" type="module"></script>
+    <script src="polyfills.f661c90aef160454.js" type="module"></script>
+    <script src="main.13717ed6024013f6.js" type="module"></script>
+  </body>
+</html>
