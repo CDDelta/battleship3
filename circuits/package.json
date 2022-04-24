@@ -1,13 +1,13 @@
 {
   "name": "battleship3-circuits",
   "scripts": {
-    "build:circuits": "sh ./scripts/compile-circuits.sh",
-    "setup:download-ptau": "sh ./scripts/download-ptau.sh",
-    "setup:circuits": "sh ./scripts/setup-circuits.sh",
-    "generate:witnesses": "sh ./scripts/generate-witnesses.sh",
-    "generate:proofs": "sh ./scripts/generate-proofs.sh",
-    "generate:verifier-contracts": "sh ./scripts/generate-verifier-contracts.sh",
-    "verify-proofs": "sh ./scripts/verify-proofs.sh",
+    "build:circuits": "bash ./scripts/compile-circuits.sh",
+    "setup:download-ptau": "bash ./scripts/download-ptau.sh",
+    "setup:circuits": "bash ./scripts/setup-circuits.sh",
+    "generate:witnesses": "bash ./scripts/generate-witnesses.sh",
+    "generate:proofs": "bash ./scripts/generate-proofs.sh",
+    "generate:verifier-contracts": "bash ./scripts/generate-verifier-contracts.sh",
+    "verify-proofs": "bash ./scripts/verify-proofs.sh",
     "full-build": "npm run build:circuits && npm run setup:download-ptau && npm run setup:circuits && npm run generate:verifier-contracts",
     "full-prove": "npm run generate:witnesses && npm run generate:proofs && npm run verify-proofs"
   },

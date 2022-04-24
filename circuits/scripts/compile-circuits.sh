@@ -1,5 +1,11 @@
+#!/bin/bash
+
+source ./scripts/common.sh
+
 mkdir -p ./dist
 
-circom src/boardsetup.circom --r1cs --wasm --sym --c -o dist
-
-circom src/fireshot.circom --r1cs --wasm --sym --c -o dist
+for circuit in "${circuits[@]}"
+do
+    echo "Compiling $circuit circuit..."
+    circom src/"$circuit".circom --r1cs --wasm --sym --c -o dist
+done

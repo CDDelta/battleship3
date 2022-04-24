@@ -1,3 +1,9 @@
-snarkjs groth16 prove ./boardsetup_final.zkey boardsetup.wtns boardsetup-proof.json boardsetup-public.json
+#!/bin/bash
 
-snarkjs groth16 prove ./fireshot_final.zkey fireshot.wtns fireshot-proof.json fireshot-public.json
+source ./scripts/common.sh
+
+for circuit in "${circuits[@]}"
+do
+    echo "Generating $circuit proof..."
+    snarkjs groth16 prove ./"$circuit"_final.zkey "$circuit".wtns "$circuit"-proof.json "$circuit"-public.json
+done

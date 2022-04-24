@@ -1,3 +1,9 @@
-node dist/boardsetup_js/generate_witness.js dist/boardsetup_js/boardsetup.wasm boardsetup-input.json boardsetup.wtns
+#!/bin/bash
 
-node dist/fireshot_js/generate_witness.js dist/fireshot_js/fireshot.wasm fireshot-input.json fireshot.wtns
+source ./scripts/common.sh
+
+for circuit in "${circuits[@]}"
+do
+    echo "Generating $circuit witness..."
+    node dist/"$circuit"_js/generate_witness.js dist/"$circuit"_js/"$circuit".wasm "$circuit"-input.json "$circuit".wtns
+done
