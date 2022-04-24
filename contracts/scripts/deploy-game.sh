@@ -2,7 +2,7 @@ export $(grep -v '^#' .env | xargs -d '\n')
 export $(grep -v '^#' .env-secret | xargs -d '\n')
 
 forge create src/Game.sol:Game \
-    --constructor-args 0x9b8c2f30beef6e0331afa69ec5a7051fce49f087 0xebf9adf8005a3d590fd655c37e91550e3892b9ea \
+    --constructor-args 0x4aec0b69f538db5e2c76c4b19815e7363efc81d5 0x5292a5dd83239c8da3d3dd638d808154cff839cb \
     --rpc-url $RPC_URL \
     --private-key $PRIVATE_KEY \
     --legacy

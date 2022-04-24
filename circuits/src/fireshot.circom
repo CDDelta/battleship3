@@ -31,9 +31,13 @@ template FireShot() {
     hasher.outs[0] === hash;
 
     // Compute which ship the shot hit.
+    // Use "<--" on shotIndex here to avoid snarkjs bug with proof completeness.
+    // TODO: Investigate snarkjs bug.
     signal shot[2];
-    shot[1] <== shotIndex \ 10;
+    shot[1] <-- shotIndex \ 10;
     shot[0] <== shotIndex - shot[1] * 10;
+
+    shot[1] * 10 + shot[0] === shotIndex;
 
     component shipHits[5];
     component shipBitlistToInteger = Bits2Num_strict();

@@ -6,7 +6,7 @@ dataSources:
     name: Game
     network: testnet
     source:
-      address: '0xfb4ed1886deb4f1ff328bc5ac30240b5074fe8c8'
+      address: '0x7a7b3a1f88d07d4aaa481474ee1853d715c1a70e'
       abi: Game
       startBlock: 24324674
     mapping:

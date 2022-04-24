@@ -108,7 +108,7 @@ contract Game is IGame {
         require(game.winner == address(0), "Game already over!");
         require(_turnShotIndex < 100, "Next shot coordinates invalid!");
         require(game.turn - 1 == game.shots[_prevTurnShotIndex + prevPlayerIndex * 100], "Incorrect shot for previous turn provided!");
-        require(fireShotVerifier.verifyProof(a, b, c, [_hitShipId, game.boards[prevPlayerIndex], _prevTurnShotIndex]), "Invalid proof!");
+        require(fireShotVerifier.verifyProof(a, b, c, [_hitShipId, game.boards[currPlayerIndex], _prevTurnShotIndex]), "Invalid proof!");
 
         if (_hitShipId != 0) {
             game.hits[prevPlayerIndex]++;
