@@ -4,11 +4,11 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: Game
-    network: testnet
+    network: harmony
     source:
-      address: '0x7a7b3a1f88d07d4aaa481474ee1853d715c1a70e'
+      address: '0x5fd201a1dce40e4bcc6b4c10f3960598ff73545f'
       abi: Game
-      startBlock: 24324674
+      startBlock: 26215987
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5

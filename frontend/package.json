@@ -5,9 +5,9 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "deploy": "firebase deploy --only hosting",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "deploy": "node ./scripts/deploy.mjs",
     "generate:graphql-typings": "graphql-codegen",
     "generate:contract-typings": "sh ./scripts/generate-contract-typings.sh",
     "copy-circuits": "sh ./scripts/copy-circuits.sh"

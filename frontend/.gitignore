@@ -3,6 +3,8 @@
 /src/contracts
 /src/graphql
 
+.firebase
+
 # Compiled output
 /dist
 /tmp
